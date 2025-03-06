@@ -26,6 +26,10 @@ do
   if (choice == "1")
   {
     // Display Mario Characters
+    foreach(var c in marios)
+    {
+      Console.WriteLine(c.Display());
+    }
   }
   else if (choice == "2")
   {
