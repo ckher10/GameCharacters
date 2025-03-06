@@ -53,6 +53,7 @@ do
     if (UInt32.TryParse(Console.ReadLine(), out UInt32 Id))
     {
       logger.Info($"Character Id {Id} entered");
+      Mario? character = marios.First(c => c.Id == Id);
     } else {
       logger.Error("Invalid Id");
     }
