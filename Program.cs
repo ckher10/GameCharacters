@@ -34,6 +34,11 @@ do
   else if (choice == "2")
   {
     // Add Mario Character
+    // Generate unique Id
+    Mario mario = new()
+    {
+      Id = marios.Count == 0 ? 1 : marios.Max(c => c.Id) + 1
+    };
   }
   else if (choice == "3")
   {
