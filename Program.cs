@@ -1,4 +1,5 @@
 ﻿using NLog;
+using System.Reflection;
 using System.Text.Json;
 string path = Directory.GetCurrentDirectory() + "//nlog.config";
 
@@ -39,22 +40,7 @@ do
     {
       Id = marios.Count == 0 ? 1 : marios.Max(c => c.Id) + 1
     };
-    // Input Name, Description
-    Console.WriteLine("Enter Name:");
-    mario.Name = Console.ReadLine();
-    Console.WriteLine("Enter Description:");
-    mario.Description = Console.ReadLine();
-    // Input Alias
-    List<string> list = [];
-    do {
-      Console.WriteLine($"Enter Alias or (enter) to quit:");
-      string response = Console.ReadLine()!;
-      if (string.IsNullOrEmpty(response)){
-        break;
-      }
-      list.Add(response);
-    } while (true);
-    mario.Alias = list;
+    InputCharacter(mario);
     // Add Character
     marios.Add(mario);
     File.WriteAllText(marioFileName, JsonSerializer.Serialize(marios));
@@ -71,3 +57,29 @@ do
 } while (true);
 
 logger.Info("Program ended");
+
+static void InputCharacter(Character character)
+{
+  Type type = character.GetType();
+  PropertyInfo[] properties = type.GetProperties();
+  var props = properties.Where(p => p.Name != "Id");
+  foreach (PropertyInfo prop in props)
+  {
+    if (prop.PropertyType == typeof(string))
+    {
+      Console.WriteLine($"Enter {prop.Name}:");
+      prop.SetValue(character, Console.ReadLine());
+    } else if (prop.PropertyType == typeof(List<string>)) {
+      List<string> list = [];
+      do {
+        Console.WriteLine($"Enter {prop.Name} or (enter) to quit:");
+        string response = Console.ReadLine()!;
+        if (string.IsNullOrEmpty(response)){
+          break;
+        }
+        list.Add(response);
+      } while (true);
+      prop.SetValue(character, list);
+    }
+  }
+}
