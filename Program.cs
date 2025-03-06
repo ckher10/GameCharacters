@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿﻿using NLog;
 using System.Text.Json;
 string path = Directory.GetCurrentDirectory() + "//nlog.config";
 
@@ -39,6 +39,11 @@ do
     {
       Id = marios.Count == 0 ? 1 : marios.Max(c => c.Id) + 1
     };
+    // Input Name, Description
+    Console.WriteLine("Enter Name:");
+    mario.Name = Console.ReadLine();
+    Console.WriteLine("Enter Description:");
+    mario.Description = Console.ReadLine();
   }
   else if (choice == "3")
   {
