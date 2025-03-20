@@ -1,4 +1,5 @@
 ﻿using NLog;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text.Json;
 string path = Directory.GetCurrentDirectory() + "//nlog.config";
@@ -8,15 +9,22 @@ var logger = LogManager.Setup().LoadConfigurationFromFile(path).GetCurrentClassL
 
 logger.Info("Program started");
 
+//Helper function to grab characters from files.
+List<T> getCharacters<T>(string fileName)  {
+List<T> characters = [];
+// check if file exists
+if (File.Exists(fileName))
+{
+  characters = JsonSerializer.Deserialize<List<T>>(File.ReadAllText(fileName))!;
+  logger.Info($"File deserialized {fileName}");
+  return characters;
+}
+else return characters;
+}
+
 // deserialize mario json from file into List<Mario>
 string marioFileName = "mario.json";
-List<Mario> marios = [];
-// check if file exists
-if (File.Exists(marioFileName))
-{
-  marios = JsonSerializer.Deserialize<List<Mario>>(File.ReadAllText(marioFileName))!;
-  logger.Info($"File deserialized {marioFileName}");
-}
+List<Mario> marios = getCharacters<Mario>("mario.json");
 
 do
 {
