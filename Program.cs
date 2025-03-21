@@ -42,7 +42,6 @@ void addCharacter(Character character, string fileName)
     Mario mario = new();
     mario.Id = marios.Count == 0 ? 1 : marios.Max(c => c.Id) + 1;
     InputCharacter(mario);
-
     // Add Character
     marios.Add(mario);
     File.WriteAllText(marioFileName, JsonSerializer.Serialize(marios));
@@ -53,7 +52,6 @@ void addCharacter(Character character, string fileName)
     StreetFighter fighter = new();
     fighter.Id = SFCharacters.Count == 0 ? 1 : SFCharacters.Max(c => c.Id) + 1;
     InputCharacter(fighter);
-
     // Add Character
     SFCharacters.Add(fighter);
     File.WriteAllText(SFFileName, JsonSerializer.Serialize(SFCharacters));
@@ -64,7 +62,6 @@ void addCharacter(Character character, string fileName)
     DonkeyKong DKCharacter = new();
     DKCharacter.Id = DKCharacters.Count == 0 ? 1 : DKCharacters.Max(c => c.Id) + 1;
     InputCharacter(DKCharacter);
-
     // Add Character
     DKCharacters.Add(DKCharacter);
     File.WriteAllText(DKFileName, JsonSerializer.Serialize(DKCharacters));
@@ -73,19 +70,20 @@ void addCharacter(Character character, string fileName)
 }
 
 //Helper function to display all games
-void displayGames() {
+void displayGames()
+{
   Console.WriteLine("\nFrom which game do you want?");
-    Console.WriteLine("1) Mario");
-    Console.WriteLine("2) Donkey Kong");
-    Console.WriteLine("3) Street Figher");
+  Console.WriteLine("1) Mario");
+  Console.WriteLine("2) Donkey Kong");
+  Console.WriteLine("3) Street Figher");
 }
 
 do
 {
   // display choices to user
-  Console.WriteLine("1) Display Mario Characters");
-  Console.WriteLine("2) Add Mario Character");
-  Console.WriteLine("3) Remove Mario Character");
+  Console.WriteLine("1) Display Characters");
+  Console.WriteLine("2) Add Character");
+  Console.WriteLine("3) Remove Character");
   Console.WriteLine("Enter to quit");
 
   // input selection
@@ -129,26 +127,67 @@ do
   }
   else if (choice == "3")
   {
-    // Remove Mario Character
-    Console.WriteLine("Enter the Id of the character to remove:");
-    if (UInt32.TryParse(Console.ReadLine(), out UInt32 Id))
+    displayGames();
+    choice = Console.ReadLine();
+    if (choice == "1")
     {
-      Mario? character = marios.FirstOrDefault(c => c.Id == Id);
-      if (character == null)
+      // Remove Mario Character
+      Console.WriteLine("\nEnter the Id of the character to remove:");
+      if (UInt32.TryParse(Console.ReadLine(), out UInt32 Id))
       {
-        logger.Error($"Character Id {Id} not found");
-      }
-      else
-      {
-        marios.Remove(character);
-        // serialize list<marioCharacter> into json file
-        File.WriteAllText(marioFileName, JsonSerializer.Serialize(marios));
-        logger.Info($"Character Id {Id} removed");
+        Mario? character = marios.FirstOrDefault(c => c.Id == Id);
+        if (character == null)
+        {
+          logger.Error($"\nCharacter Id {Id} not found\n");
+        }
+        else
+        {
+          marios.Remove(character);
+          // serialize list<marioCharacter> into json file
+          File.WriteAllText(marioFileName, JsonSerializer.Serialize(marios));
+          logger.Info($"\nCharacter Id {Id} removed\n");
+        }
       }
     }
-    else
+    if (choice == "2")
     {
-      logger.Error("Invalid Id");
+      // Remove Mario Character
+      Console.WriteLine("\nEnter the Id of the character to remove:");
+      if (UInt32.TryParse(Console.ReadLine(), out UInt32 Id))
+      {
+        DonkeyKong? character = DKCharacters.FirstOrDefault(c => c.Id == Id);
+        if (character == null)
+        {
+          logger.Error($"\nCharacter Id {Id} not found\n");
+        }
+        else
+        {
+          DKCharacters.Remove(character);
+          // serialize list<marioCharacter> into json file
+          File.WriteAllText(DKFileName, JsonSerializer.Serialize(DKCharacters));
+          logger.Info($"\nCharacter Id {Id} removed\n");
+        }
+      }
+    }
+    if (choice == "3")
+    {
+      // Remove Mario Character
+      Console.WriteLine("\nEnter the Id of the character to remove:");
+      if (UInt32.TryParse(Console.ReadLine(), out UInt32 Id))
+      {
+        StreetFighter? character = SFCharacters.FirstOrDefault(c => c.Id == Id);
+        if (character == null)
+        {
+          logger.Error($"\nCharacter Id {Id} not found\n");
+        }
+        else
+        {
+          SFCharacters.Remove(character);
+          // serialize list<marioCharacter> into json file
+          File.WriteAllText(SFFileName, JsonSerializer.Serialize(SFCharacters));
+          logger.Info($"\nCharacter Id {Id} removed\n");
+        }
+      }
     }
   }
   else if (string.IsNullOrEmpty(choice))
