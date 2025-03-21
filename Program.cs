@@ -12,7 +12,11 @@ logger.Info("Program started");
 
 // deserialize mario json from file into List<Mario>
 string marioFileName = "mario.json";
+string DKFileName = "dk.json";
+string SFFileName = "sf2.json";
 List<Mario> marios = getCharacters<Mario>(marioFileName);
+List<Mario> DKCharacters = getCharacters<Mario>(DKFileName);
+List<Mario> SFCharacters = getCharacters<Mario>(SFFileName);
 
 //Helper function to grab characters from files.
 List<T> getCharacters<T>(string fileName)
@@ -69,10 +73,32 @@ do
 
   if (choice == "1")
   {
+    Console.WriteLine("\nFrom which game do you want?");
+    Console.WriteLine("1) Mario");
+    Console.WriteLine("2) Donkey Kong");
+    Console.WriteLine("3) Street Figher");
+    choice = Console.ReadLine();
     // Display Mario Characters
-    foreach (var c in marios)
+    if (choice == "1")
     {
-      Console.WriteLine(c.Display());
+      foreach (var c in marios)
+      {
+        Console.WriteLine(c.Display());
+      }
+    }
+    if (choice == "2")
+    {
+      foreach (var c in DKCharacters)
+      {
+        Console.WriteLine(c.Display());
+      }
+    }
+    if (choice == "3")
+    {
+      foreach (var c in SFCharacters)
+      {
+        Console.WriteLine(c.Display());
+      }
     }
   }
   else if (choice == "2")
