@@ -15,8 +15,8 @@ string marioFileName = "mario.json";
 string DKFileName = "dk.json";
 string SFFileName = "sf2.json";
 List<Mario> marios = getCharacters<Mario>(marioFileName);
-List<Mario> DKCharacters = getCharacters<Mario>(DKFileName);
-List<Mario> SFCharacters = getCharacters<Mario>(SFFileName);
+List<DonkeyKong> DKCharacters = getCharacters<DonkeyKong>(DKFileName);
+List<StreetFighter> SFCharacters = getCharacters<StreetFighter>(SFFileName);
 
 //Helper function to grab characters from files.
 List<T> getCharacters<T>(string fileName)
@@ -50,14 +50,35 @@ void addCharacter(Character character, string fileName)
   }
   if (type == typeof(StreetFighter))
   {
-    //TODO: add to SF file
+    StreetFighter fighter = new();
+    fighter.Id = SFCharacters.Count == 0 ? 1 : SFCharacters.Max(c => c.Id) + 1;
+    InputCharacter(fighter);
+
+    // Add Character
+    SFCharacters.Add(fighter);
+    File.WriteAllText(SFFileName, JsonSerializer.Serialize(SFCharacters));
+    logger.Info($"Character added: {fighter.Name}");
   }
   if (type == typeof(DonkeyKong))
   {
-    //TODO: add to DK file
+    DonkeyKong DKCharacter = new();
+    DKCharacter.Id = DKCharacters.Count == 0 ? 1 : DKCharacters.Max(c => c.Id) + 1;
+    InputCharacter(DKCharacter);
+
+    // Add Character
+    DKCharacters.Add(DKCharacter);
+    File.WriteAllText(DKFileName, JsonSerializer.Serialize(DKCharacters));
+    logger.Info($"Character added: {DKCharacter.Name}");
   }
 }
 
+//Helper function to display all games
+void displayGames() {
+  Console.WriteLine("\nFrom which game do you want?");
+    Console.WriteLine("1) Mario");
+    Console.WriteLine("2) Donkey Kong");
+    Console.WriteLine("3) Street Figher");
+}
 
 do
 {
@@ -73,10 +94,7 @@ do
 
   if (choice == "1")
   {
-    Console.WriteLine("\nFrom which game do you want?");
-    Console.WriteLine("1) Mario");
-    Console.WriteLine("2) Donkey Kong");
-    Console.WriteLine("3) Street Figher");
+    displayGames();
     choice = Console.ReadLine();
     // Display Mario Characters
     if (choice == "1")
@@ -103,7 +121,11 @@ do
   }
   else if (choice == "2")
   {
-    addCharacter(new Mario(), marioFileName);
+    displayGames();
+    choice = Console.ReadLine();
+    if (choice == "1") addCharacter(new Mario(), marioFileName);
+    if (choice == "2") addCharacter(new DonkeyKong(), DKFileName);
+    if (choice == "3") addCharacter(new StreetFighter(), SFFileName);
   }
   else if (choice == "3")
   {
