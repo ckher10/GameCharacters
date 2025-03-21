@@ -84,6 +84,7 @@ do
   Console.WriteLine("1) Display Characters");
   Console.WriteLine("2) Add Character");
   Console.WriteLine("3) Remove Character");
+  Console.WriteLine("4) Edit Character");
   Console.WriteLine("Enter to quit");
 
   // input selection
@@ -186,6 +187,72 @@ do
           // serialize list<marioCharacter> into json file
           File.WriteAllText(SFFileName, JsonSerializer.Serialize(SFCharacters));
           logger.Info($"\nCharacter Id {Id} removed\n");
+        }
+      }
+    }
+
+  }
+  if (choice == "4")
+  {
+    displayGames();
+    choice = Console.ReadLine();
+    if (choice == "1")
+    {
+      // Remove Mario Character
+      Console.WriteLine("\nEnter the Id of the character to edit:");
+      if (UInt32.TryParse(Console.ReadLine(), out UInt32 Id))
+      {
+        Mario? character = marios.FirstOrDefault(c => c.Id == Id);
+        if (character == null)
+        {
+          logger.Error($"\nCharacter Id {Id} not found\n");
+        }
+        else
+        {
+          InputCharacter(character);
+          // serialize list<marioCharacter> into json file
+          File.WriteAllText(marioFileName, JsonSerializer.Serialize(marios));
+          logger.Info($"\nCharacter Id {Id} edited\n");
+        }
+      }
+    }
+    if (choice == "2")
+    {
+      // Remove Mario Character
+      Console.WriteLine("\nEnter the Id of the character to edit:");
+      if (UInt32.TryParse(Console.ReadLine(), out UInt32 Id))
+      {
+        DonkeyKong? character = DKCharacters.FirstOrDefault(c => c.Id == Id);
+        if (character == null)
+        {
+          logger.Error($"\nCharacter Id {Id} not found\n");
+        }
+        else
+        {
+          InputCharacter(character);
+          // serialize list<marioCharacter> into json file
+          File.WriteAllText(DKFileName, JsonSerializer.Serialize(DKCharacters));
+          logger.Info($"\nCharacter Id {Id} edited\n");
+        }
+      }
+    }
+    if (choice == "3")
+    {
+      // Remove Mario Character
+      Console.WriteLine("\nEnter the Id of the character to edit:");
+      if (UInt32.TryParse(Console.ReadLine(), out UInt32 Id))
+      {
+        StreetFighter? character = SFCharacters.FirstOrDefault(c => c.Id == Id);
+        if (character == null)
+        {
+          logger.Error($"\nCharacter Id {Id} not found\n");
+        }
+        else
+        {
+          InputCharacter(character);
+          // serialize list<marioCharacter> into json file
+          File.WriteAllText(SFFileName, JsonSerializer.Serialize(SFCharacters));
+          logger.Info($"\nCharacter Id {Id} edited\n");
         }
       }
     }
