@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
 using System.Reflection;
 using System.Text.Json;
 string path = Directory.GetCurrentDirectory() + "//nlog.config";
@@ -9,22 +10,50 @@ var logger = LogManager.Setup().LoadConfigurationFromFile(path).GetCurrentClassL
 
 logger.Info("Program started");
 
-//Helper function to grab characters from files.
-List<T> getCharacters<T>(string fileName)  {
-List<T> characters = [];
-// check if file exists
-if (File.Exists(fileName))
-{
-  characters = JsonSerializer.Deserialize<List<T>>(File.ReadAllText(fileName))!;
-  logger.Info($"File deserialized {fileName}");
-  return characters;
-}
-else return characters;
-}
-
 // deserialize mario json from file into List<Mario>
 string marioFileName = "mario.json";
-List<Mario> marios = getCharacters<Mario>("mario.json");
+List<Mario> marios = getCharacters<Mario>(marioFileName);
+
+//Helper function to grab characters from files.
+List<T> getCharacters<T>(string fileName)
+{
+  List<T> characters = [];
+  // check if file exists
+  if (File.Exists(fileName))
+  {
+    characters = JsonSerializer.Deserialize<List<T>>(File.ReadAllText(fileName))!;
+    logger.Info($"File deserialized {fileName}");
+    return characters;
+  }
+  else return characters;
+}
+
+//Helper function to add characters to appropriete file
+void addCharacter(Character character, string fileName)
+{
+  // Add Character
+  Type type = character.GetType();
+  if (type == typeof(Mario))
+  {
+    Mario mario = new();
+    mario.Id = marios.Count == 0 ? 1 : marios.Max(c => c.Id) + 1;
+    InputCharacter(mario);
+
+    // Add Character
+    marios.Add(mario);
+    File.WriteAllText(marioFileName, JsonSerializer.Serialize(marios));
+    logger.Info($"Character added: {mario.Name}");
+  }
+  if (type == typeof(StreetFighter))
+  {
+    //TODO: add to SF file
+  }
+  if (type == typeof(DonkeyKong))
+  {
+    //TODO: add to DK file
+  }
+}
+
 
 do
 {
@@ -41,24 +70,14 @@ do
   if (choice == "1")
   {
     // Display Mario Characters
-    foreach(var c in marios)
+    foreach (var c in marios)
     {
       Console.WriteLine(c.Display());
     }
   }
   else if (choice == "2")
   {
-    // Add Mario Character
-    // Generate unique Id
-    Mario mario = new()
-    {
-      Id = marios.Count == 0 ? 1 : marios.Max(c => c.Id) + 1
-    };
-    InputCharacter(mario);
-    // Add Character
-    marios.Add(mario);
-    File.WriteAllText(marioFileName, JsonSerializer.Serialize(marios));
-    logger.Info($"Character added: {mario.Name}");
+    addCharacter(new Mario(), marioFileName);
   }
   else if (choice == "3")
   {
@@ -70,18 +89,26 @@ do
       if (character == null)
       {
         logger.Error($"Character Id {Id} not found");
-      } else {
+      }
+      else
+      {
         marios.Remove(character);
         // serialize list<marioCharacter> into json file
         File.WriteAllText(marioFileName, JsonSerializer.Serialize(marios));
         logger.Info($"Character Id {Id} removed");
       }
-    } else {
+    }
+    else
+    {
       logger.Error("Invalid Id");
     }
-  } else if (string.IsNullOrEmpty(choice)) {
+  }
+  else if (string.IsNullOrEmpty(choice))
+  {
     break;
-  } else {
+  }
+  else
+  {
     logger.Info("Invalid choice");
   }
 } while (true);
@@ -99,12 +126,16 @@ static void InputCharacter(Character character)
     {
       Console.WriteLine($"Enter {prop.Name}:");
       prop.SetValue(character, Console.ReadLine());
-    } else if (prop.PropertyType == typeof(List<string>)) {
+    }
+    else if (prop.PropertyType == typeof(List<string>))
+    {
       List<string> list = [];
-      do {
+      do
+      {
         Console.WriteLine($"Enter {prop.Name} or (enter) to quit:");
         string response = Console.ReadLine()!;
-        if (string.IsNullOrEmpty(response)){
+        if (string.IsNullOrEmpty(response))
+        {
           break;
         }
         list.Add(response);
